@@ -1,8 +1,13 @@
 #pragma strict
 
-public var enemySpeed:float; // speed variable for character
+public static var enemySpeed:float = 10; // speed variable for character
 private var playerReference:GameObject;
 private var movementVector:Vector3;
+
+function ChangeSpeed(inSpeed:float)
+{
+	enemySpeed = inSpeed;
+}
 
 function Awake()
 {

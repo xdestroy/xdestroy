@@ -1,0 +1,9 @@
+* Faster gun speed
+* Big Bomb (destroy all enemies on screen)
+* slower enemy movespeed
+* Multiple bullets (3 direction spray)
+
+
+
+
+* Attempted to fix enemies trace of player so will not bug out if constant moving in and out of grid

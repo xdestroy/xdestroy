@@ -22,7 +22,7 @@ function Awake()
 }
 function Init()
 {
-	Player_beh.lives = 4;
+	Player_beh.lives = 5;
 	Lazer_beh.score = 0;
 	Player_beh.gameOver = false;
 	Time.timeScale = 1;
@@ -100,17 +100,51 @@ function OnTriggerEnter(collision : Collider)
 		Destroy (collision.gameObject);
 		GunPowerUp();
 		break;
+		case "SlowEnemies(Clone)":
+		Destroy (collision.gameObject);
+		SlowEnemies();
+		break;
+		case "Invincibility(Clone)":
+			Destroy (collision.gameObject);
+			Invincible();
+		break;
 		default:
 		break;
 	}
 }
 
+function Invincible()
+{
+	if (isAlive)
+	{
+		Physics.IgnoreCollision("Enemy(Clone)",collider, ignore : boolean = true));
+		yield WaitForSeconds(8);
+		Physics.IgnoreCollision("Enemy(Clone)",collider, ignore : boolean = false));
+	}
+}
+
+function SlowEnemies()
+{
+	if (isAlive)
+	{
+		Enemy_beh.enemySpeed = (Enemy_beh.enemySpeed - 3);
+		if(Enemy_beh.enemySpeed <= 4)
+		{
+			Enemy_beh.enemySpeed = 4;
+		}
+	}
+}
+
 function GunPowerUp() 
 {
-	if (isAlive && (invinc == false))
+	if (isAlive)
 	{
 		StopBullets();
-		bulletFrequency = 0.03;
+		bulletFrequency = (bulletFrequency - 0.07);
+		if(bulletFrequency <= 0.05)
+			{
+				bulletFrequency = 0.05;
+			}
 		StartBullets();
 	}
 }
@@ -159,6 +193,7 @@ function Die(){
  this.isAlive = false;
  StopBullets();
  bulletFrequency = 0.3;
+ Enemy_beh.enemySpeed = 10;
  this.transform.position = Vector3( spawnPos.x , 10, spawnPos.z );
  this.renderer.enabled = false;
  yield WaitForSeconds(2);
