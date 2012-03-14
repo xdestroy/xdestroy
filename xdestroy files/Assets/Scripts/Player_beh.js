@@ -22,7 +22,7 @@ function Awake()
 }
 function Init()
 {
-	Player_beh.lives = 5;
+	Player_beh.lives = 4;
 	Lazer_beh.score = 0;
 	Player_beh.gameOver = false;
 	Time.timeScale = 1;
