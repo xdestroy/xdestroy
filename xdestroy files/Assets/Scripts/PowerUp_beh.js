@@ -16,7 +16,7 @@ function Awake ()
 
 function SpawnPower()
 {
-	yield WaitForSeconds(Random.Range(1.0, 6.0));
+	yield WaitForSeconds(Random.Range(15.0, 60.0));
 	var pos = Vector3(Random.Range(-19,19),0,Random.Range(-19,19));
 	Instantiate(puList[Random.Range(0,puList.length)],pos,Quaternion.identity);
 	Awake();

@@ -11,6 +11,8 @@ private var isAlive:boolean;
 private var invinc:boolean = false;
 private var Enemies:GameObject;
 private var bullets:boolean;
+public var invincibleTexture:Texture2D;
+public var norTexture:Texture2D;
 
 
 
@@ -113,20 +115,73 @@ function OnTriggerEnter(collision : Collider)
 	}
 }
 
+function InText(Selector:int)
+{
+switch(Selector)
+{
+case 1:
+	for(var i=0; i<3; i++)
+	{
+		ScoresLives_beh.Invincible = true;
+		yield WaitForSeconds(.2);
+		ScoresLives_beh.Invincible = false;
+		yield WaitForSeconds(.1);
+	}
+break;
+case 2:
+	for(i=0; i<3; i++)
+	{
+		ScoresLives_beh.GunSpeed = true;
+		yield WaitForSeconds(.2);
+		ScoresLives_beh.GunSpeed = false;
+		yield WaitForSeconds(.1);
+	}
+break;
+case 3:
+	for(i=0; i<3; i++)
+	{
+	ScoresLives_beh.EnemySlow = true;
+	yield WaitForSeconds(.2);
+	ScoresLives_beh.EnemySlow = false;
+	yield WaitForSeconds(.1);
+	}
+break; 
+}
+}
+
 function Invincible()
 {
-	if (isAlive)
+	Invincible(8);
+}
+function Invincible(time:float)
+{
+		if (isAlive)
 	{
-		Physics.IgnoreCollision("Enemy(Clone)",collider, ignore : boolean = true));
-		yield WaitForSeconds(8);
-		Physics.IgnoreCollision("Enemy(Clone)",collider, ignore : boolean = false));
+		invinc = true;
+		StartInvincibility();
+		InText(1);
+		yield WaitForSeconds(time);
+		invinc = false;
+		StopInvincibility();
 	}
 }
+
+function StartInvincibility()
+{
+	renderer.material.mainTexture = invincibleTexture;
+}
+
+function StopInvincibility()
+{
+	renderer.material.mainTexture = norTexture;
+}
+
 
 function SlowEnemies()
 {
 	if (isAlive)
 	{
+		InText(3);
 		Enemy_beh.enemySpeed = (Enemy_beh.enemySpeed - 3);
 		if(Enemy_beh.enemySpeed <= 4)
 		{
@@ -139,6 +194,7 @@ function GunPowerUp()
 {
 	if (isAlive)
 	{
+		InText(2);
 		StopBullets();
 		bulletFrequency = (bulletFrequency - 0.07);
 		if(bulletFrequency <= 0.05)
@@ -204,9 +260,7 @@ function ReSpawn(spawnPos:Vector3){
  this.renderer.enabled = true;
  this.isAlive = true;
  this.transform.position = Vector3( spawnPos.x , 0, spawnPos.z );
- invinc = true;
- yield WaitForSeconds(2);
- invinc = false;
+ Invincible(2);
 }
 
 function GameOver()
