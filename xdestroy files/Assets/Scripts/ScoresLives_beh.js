@@ -20,10 +20,8 @@ function OnGUI() {
 	{
 		GUI.Box(Rect(Screen.width/2 - 55,Screen.height/2 -150,300,100), "ENEMIES SLOWED!", guiStyle);
 	}
-	
-	}
 
-if (Player_beh.gameOver) 
+else if (Player_beh.gameOver) 
 {
 	GUI.Box(Rect(Screen.width/2 - 55,Screen.height/2 -150,300,100), "Game Over!", guiStyle);
 	if (GUI.Button (Rect (Screen.width/2 - 50,Screen.height/2 -110, 100, 30), "Retry")) // if no lives left ask to rety print game over
@@ -36,4 +34,5 @@ if (Player_beh.gameOver)
 		if (GUI.Button (Rect (Screen.width/2 - 50,Screen.height/2 -50, 100, 30), "Quit")) {
 		Application.Quit();
 	}
+}
 }
