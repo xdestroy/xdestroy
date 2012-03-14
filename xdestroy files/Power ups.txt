@@ -2,6 +2,7 @@
 * Big Bomb (destroy all enemies on screen)
 * slower enemy movespeed
 * Multiple bullets (3 direction spray)
+* Extra life
 
 
 

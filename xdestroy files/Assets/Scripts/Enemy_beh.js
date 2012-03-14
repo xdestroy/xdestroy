@@ -122,6 +122,7 @@ function UpdateMovement()
  var playerZ = playerReference.transform.position.z;
  var thisX = this.transform.position.x;
  var thisZ = this.transform.position.z;
+ var transXY:Vector3;
  var xylimit = 19.0;
  var tmpVec = Vector3(0,0,0);
  var pXfromWall:float;
@@ -132,8 +133,7 @@ function UpdateMovement()
  var distanceEPZ:float; // distance between en + player for Y
  var MultiX:float; // direction multiplier for X
  var MultiZ:float; // direction multiplier for Y
- 
-movementVector = (playerReference.transform.position - this.transform.position);
+ var multiVector:Vector3 = enemySpeed*movementVector; //create multivector multi
  
  if(playerX < thisX)
  {
@@ -168,11 +168,20 @@ else if(distanceEPZ < xylimit)
 {
 	MultiZ = 1;
 }
+
+//movementVector = tmpVec;
+
  
- //movementVector = tmpVec;
+movementVector = (playerReference.transform.position - this.transform.position);
  
- movementVector.Normalize(); // normalize pos
+movementVector.Normalize(); // normalize pos
  
- rigidbody.velocity += 0.03*(((movementVector*enemySpeed)*MultiX) - rigidbody.velocity); // tells enemy to move to player
+multiVector.x *= MultiX;
+multiVector.y = 0;
+multiVector.z *= MultiZ;
+
+rigidbody.velocity += 0.03*(multiVector - rigidbody.velocity);
+ 
+//rigidbody.velocity += 0.03*(Vector3.Scale(Vector3(MultiX, 0, MultiZ)Vector3(movementVector)*enemySpeed - rigidbody.velocity)); // tells enemy to move to player
  //current position = itself, plus a portion of the difference between the current position and the target position
 }
