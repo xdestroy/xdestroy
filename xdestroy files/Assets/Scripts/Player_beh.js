@@ -146,6 +146,13 @@ function OnTriggerEnter(collision : Collider) // when player collides with anoth
 				}
 			else	
 				UpdateLives(); // if not inv run update lives
+		case "Enemy2(Clone)": // if player hits enemy
+			if(invinc) {
+				Destroy (collision.gameObject); // if incible kill enemy not player
+				Lazer_beh.score = Lazer_beh.score+1; // add to score if player hits enemy while invinc
+				}
+			else	
+				UpdateLives(); // if not inv run update lives
 		break;
 		case "Wall": // if player hits wall run wallcolide
 		WallCollide();

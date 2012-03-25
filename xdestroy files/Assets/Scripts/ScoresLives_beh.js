@@ -4,6 +4,8 @@ public static var Invincible = false;
 public static var GunSpeed = false;
 public static var EnemySlow = false;
 public static var Multibullets = false;
+public static var level:int;
+public static var showLevel:boolean;
 
 function OnGUI() {
 		GUI.Box(Rect (Screen.width/2 - 35,25,100,20),"Score: "+Lazer_beh.score); // show GUI with score
@@ -24,6 +26,9 @@ function OnGUI() {
 	else if(Multibullets)
 	{
 		GUI.Box(Rect(Screen.width/2 - 55,Screen.height/2 -150,300,100), "MULTIBULLETS!", guiStyle); // display multibullets text if called
+	}
+	else if(showLevel){
+		GUI.Box(Rect(Screen.width/2 - 40,Screen.height/2 +170,100,100), "Wave "+level, guiStyle);
 	}
 
 else if (Player_beh.gameOver) 
