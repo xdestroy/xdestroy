@@ -14,6 +14,7 @@ private var bullets:boolean;
 public var invincibleTexture:Texture2D;
 public var norTexture:Texture2D;
 public static var multib:boolean = false;
+public static var defaultInvincibiltyTime:float = 8.0;
 
 
 
@@ -29,6 +30,10 @@ function Init()
 	Lazer_beh.score = 0; // intialize score
 	Player_beh.gameOver = false; // set gameover as false
 	Time.timeScale = 1; // unpause game if paused
+	bulletFrequency = 0.3; // reset power up for bullets
+	Enemy_beh.enemySpeed = 10; // reset speed powerup for enemies
+	Enemy2_beh.enemySpeed = 10; // reset speed powerup for enemie2
+	multib = false; // resets multibullets
 }
 
 function Update () 
@@ -167,7 +172,7 @@ function OnTriggerEnter(collision : Collider) // when player collides with anoth
 		break;
 		case "Invincibility(Clone)": // if player hits powerup run invincible
 			Destroy (collision.gameObject); // destroy powerup object
-			Invincible(); // run invincible powerup script
+			Invincible(0); // run invincible powerup script 
 		break;
 		case "Multibullets(Clone)": // if player hits powerup run multibullets
 		Destroy (collision.gameObject); // destroy powerup object
@@ -232,18 +237,18 @@ function Multibullets()
 	}
 }
 
-function Invincible() 
-{
-	Invincible(8); // set default value for invincible as 8 seconds
-}
-function Invincible(time:float)
+function Invincible(intime:float)
 {
 	if (isAlive) // if player alive 
 	{
+		if (intime == 0.0) // this is a terrible terrible hack due to send message not liking overloaded functions
+		{
+			intime = defaultInvincibiltyTime;
+		} 
 		invinc = true; // invible = true
 		StartInvincibility(); // run start invic script
 		InText(1); // run text flash script
-		yield WaitForSeconds(time); // wait for 8 seconds (default value)
+		yield WaitForSeconds(intime); // wait for 8 seconds (default value)
 		invinc = false; // end invic
 		StopInvincibility(); // run stop inv script
 	}

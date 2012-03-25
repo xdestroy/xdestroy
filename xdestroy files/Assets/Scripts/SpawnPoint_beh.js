@@ -28,19 +28,22 @@ function SpawnRater()
 	StartSpawner(); // start spawner script
 }
 
-function StartSpawner(){
+function StartSpawner()
+{
 	 //print('StartSpawn =  '+spawnInterval+', Instance:'+this+",  spawnObj = "+spawnObj); // print spawn int for debugging purposes
 	 InvokeRepeating("SpawnObject", 0, spawnInterval); // start spawning enemies dependant on variables
 	 spawning = true; // set spawning to true
 }
 
-function StopSpawner(){
+function StopSpawner()
+{
 	//print('StopSpawner '+'Instance:'+this); // print stop spawner for debug purposes
 	CancelInvoke("SpawnObject"); // stop the invoke repeat
 	spawning = false; // set spawning to false
 }
 
-function SetSpawnObj(obj:GameObject){
+function SetSpawnObj(obj:GameObject)
+{
 StopSpawner();
 spawnObj = obj;
 StartSpawner();

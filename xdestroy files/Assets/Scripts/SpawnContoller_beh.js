@@ -1,3 +1,4 @@
+#pragma strict
 // All Array set in prefab, MUST BE SAME LENGTH, each array index corresponds to a Wave / Level
 public var setEnemyTypeList:GameObject[]; //List of Enemy prefabs
 public var setScoreLevels:int[]; // Score to change wave on.		
@@ -8,7 +9,7 @@ public var setEnemySpeed:float[];
 public var spawnerPrefab:GameObject; //Spawn Point Prefab, set in the properties of this prefab
 private var curEnemyPrefab:GameObject; // Enemy prefab for spawners to use.
 
-private var spawnPointInstanceList:Array; // List of created spawn points.
+private var spawnPointInstanceList:GameObject[]; // List of created spawn points.
 
 //logic Switchs and indexs
 private var doSpawn:boolean;//check before recycling spawner prefabs.
@@ -16,19 +17,22 @@ private var thisSpawnLevel:int = 0; // Keep track of loop in scorecheck
 private var lastSpawnLevel:int = -1; 
 private var showLevel:boolean = false;
 
-function Awake(){
+function Awake()
+{
 	//This is just a test, in place of SpawnLogic() in Update().
 	//curEnemyPrefab = setEnemyTypeList[0];
 	//CreateSpawns(5);
 	//print("typelist: "+this.setEnemyTypeList.length);
 }
 
-function Update () {
+function Update () 
+{
 	ControlLogic();
 	GuiHook();
 }
 
-function ControlLogic(){
+function ControlLogic()
+{
 	/*
 	if (firstRun){
 		SetSpawnOptions(thisSpawnLevel);
@@ -38,27 +42,34 @@ function ControlLogic(){
 	}
 	*/
 	ScoreCheck();
-	if (doSpawn){
-		SetSpawnOptions(thisSpawnLevel);
+	if (doSpawn)
+	{
+		SetSpawnOptions(thisSpawnLevel); // set spawn options appropriate for level
 		RemoveSpawns();
-		CreateSpawns(setNumSpawnPoints[thisSpawnLevel]);
+		GameObject.Find('Player').SendMessage("Invincible",0.5);
+		CreateSpawns(setNumSpawnPoints[thisSpawnLevel]); // creates spawnpoints for level
 		doSpawn = false;
 	}
 	
 }
 
-function ScoreCheck(){
-	if (thisSpawnLevel > lastSpawnLevel){
+function ScoreCheck()
+{
+	if (thisSpawnLevel > lastSpawnLevel) // checks level / wave player on
+	{ 
 		print("scorecheck: TSL > LSL");
 		doSpawn = true;
 		lastSpawnLevel = thisSpawnLevel;
 		ScoresLives_beh.showLevel = true;
 	}
-	else{
+	else
+	{
 		//print("scorecheck: ! TSL > LSL");
 		var i:int;
-		for (i = setScoreLevels.length-1; i >= 0 ; i--){ // checks through score  array backwoulds, set thisSpawnLevel to coorisponding level
-			if (Lazer_beh.score > setScoreLevels[i]){
+		for (i = setScoreLevels.length-1; i >= 0 ; i--)
+		{ // checks through score array backwards, set thisSpawnLevel to coorisponding level
+			if (Lazer_beh.score > setScoreLevels[i])
+			{
 				print("scorecheck: (! TSL > LSL  ) && (score > scorelevel["+i+'])');
 				thisSpawnLevel = i;				
 				break;
@@ -67,8 +78,10 @@ function ScoreCheck(){
 	}
 }
 
-function GuiHook(){
-	if (ScoresLives_beh.showLevel){
+function GuiHook()
+{ // function for displaying current level / wave
+	if (ScoresLives_beh.showLevel)
+	{
 	ScoresLives_beh.level = thisSpawnLevel + 1;
 	ScoresLives_beh.showLevel = true;
 	yield WaitForSeconds(2);
@@ -117,44 +130,51 @@ var i:int;
 
 
 
-function SetSpawnOptions(level:int){
-	curEnemyPrefab =setEnemyTypeList[level];
+function SetSpawnOptions(level:int)
+{
+	curEnemyPrefab = setEnemyTypeList[level];
 	//enemySpawnRate:
 	
 }
 
 
-function CreateSpawns(amount:int){
+function CreateSpawns(amount:int)
+{
 	// create amount of spawner prefabs at random locations
 	var i:int;
-	for(i = 0; i < amount; i++){ 
+	for(i = 0; i < amount; i++)
+	{ 
 		//spawnPointInstanceList[i] = Instantiate(spawnerPrefab,Vector3(Random.Range(-18,18),0,Random.Range(-18,18)), Quaternion.identity);
-		Instantiate(spawnerPrefab,Vector3(Random.Range(-18,18),0,Random.Range(-18,18)), Quaternion.identity);
+		Instantiate(spawnerPrefab,Vector3(Random.Range(-20,20),0,Random.Range(-20,20)), Quaternion.identity);
 		//print ("spList :"+spawnPointInstanceList[i] );
-		}	
+	}	
 		ApplyEnemySpawnType();
 }
 
-function ApplyEnemySpawnType(){
+function ApplyEnemySpawnType()
+{
 	// Make a list of spawnpoints, run the method SetSpawnObj on that object...
 	spawnPointInstanceList =  GameObject.FindGameObjectsWithTag("SpawnPoint");
 	var i:int;
-	for(i = 0; i < spawnPointInstanceList.length; i++){
+	for(i = 0; i < spawnPointInstanceList.length; i++)
+	{
 		spawnPointInstanceList[i].SendMessage('SetSpawnObj',curEnemyPrefab); // call the function to change the spawning enemy type
 	}
 	
 }
 
-function  RemoveSpawns(){
+function  RemoveSpawns() // function to remove spawners for more random spawning enemies
+{ 
 	spawnPointInstanceList =  GameObject.FindGameObjectsWithTag("SpawnPoint");
-	if (spawnPointInstanceList.length != 0){
+	if (spawnPointInstanceList.length != 0)
+	{ // if spawn points exist - more than 1
 	
 		var i:int;
-		for( i = 0; i <  spawnPointInstanceList.length; i++){
-			Destroy( spawnPointInstanceList[i]);
-			}
+		for( i = 0; i <  spawnPointInstanceList.length; i++)
+		{ 
+			Destroy( spawnPointInstanceList[i]); // destroy each spawn point from top of array
 		}
-
-print ("RemovingSpawns");
+	}
+print ("RemovingSpawns"); // print for testing purposes
 }
 
