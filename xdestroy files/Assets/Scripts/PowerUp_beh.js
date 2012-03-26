@@ -18,14 +18,15 @@ function SpawnPower()
 {
 	if(Player_beh.multib) // if multibullet is on
 	{
-		yield WaitForSeconds(Random.Range(15.0, 60.0)); // wait for random time between 15 - 60 seconds
+		yield WaitForSeconds(Random.Range(15.0, 30.0)); // wait for random time between 15 - 60 seconds
 		var pos = Vector3(Random.Range(-19,19),0,Random.Range(-19,19)); // select random spawn point
-		Instantiate(puList[Random.Range(0,3)],pos,Quaternion.identity); // randomly spawn powerup from array not including multibullet at position set by pos
+		print("multib");
+		Instantiate(puList[Random.Range(0,2)],pos,Quaternion.identity); // randomly spawn powerup from array not including multibullet at position set by pos
 		Awake();
 	}
-	else // if multibullet is off
+	else if(!Player_beh.multib) // if multibullet is off
 	{
-		yield WaitForSeconds(Random.Range(15.0, 60.0)); // wait for random time between 15 - 60 seconds
+		yield WaitForSeconds(Random.Range(15.0, 30.0)); // wait for random time between 15 - 60 seconds
 		pos = Vector3(Random.Range(-19,19),0,Random.Range(-19,19)); // select random spawn point
 		Instantiate(puList[Random.Range(0,puList.length)],pos,Quaternion.identity); // randomly spawn powerup from array at position set by pos
 		Awake();

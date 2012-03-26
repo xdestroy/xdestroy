@@ -9,7 +9,7 @@ function OnGUI () {
 	GUI.Label(Rect (Screen.width/2 - 33,Screen.height/2 -115, 150, 30), "A - Left" );
 	GUI.Label(Rect (Screen.width/2 - 33,Screen.height/2 -100, 150, 30), "D - Right" );
 	GUI.Label(Rect (Screen.width/2 - 33,Screen.height/2 -85, 150, 30), "S - Back" );
-	GUI.Label(Rect (Screen.width/2 - 80,Screen.height/2 -63, 200, 50), "Mouse1 or Spacebar - Shoot" );
+	GUI.Label(Rect (Screen.width/2 - 80,Screen.height/2 -63, 200, 50), "Mouse1 or Spacebar - Shoot");
 	GUI.Label(Rect (Screen.width/2 - 47,Screen.height/2 -43, 160, 30), "Escape - Pause" ); 
 	
 

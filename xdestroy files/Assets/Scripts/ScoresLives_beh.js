@@ -7,8 +7,7 @@ public static var Multibullets = false;
 public static var level:int;
 public static var showLevel:boolean;
 
-function OnGUI() 
-{
+function OnGUI() {
 		GUI.Box(Rect (Screen.width/2 - 35,25,100,20),"Score: "+Lazer_beh.score); // show GUI with score
 		GUI.Box(Rect (Screen.width/2 - 35,45,100,20),"Lives: "+Player_beh.lives); // show GUI with lives
 		
@@ -29,7 +28,7 @@ function OnGUI()
 		GUI.Box(Rect(Screen.width/2 - 55,Screen.height/2 -150,300,100), "MULTIBULLETS!", guiStyle); // display multibullets text if called
 	}
 	else if(showLevel){
-		GUI.Box(Rect(Screen.width/2 - 40,Screen.height/2 +170,100,100), "Wave "+level, guiStyle); // display wave / level information
+		GUI.Box(Rect(Screen.width/2 - 40,Screen.height/2 +170,100,100), "Wave "+level, guiStyle);
 	}
 
 else if (Player_beh.gameOver) 

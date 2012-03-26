@@ -1,19 +1,18 @@
 #pragma strict
 
 public static var enemySpeed:float = 10; // speed variable for character
-public var spawnObj2:GameObject;
 private var playerReference:GameObject;
 private var movementVector:Vector3;
+public var explosionEffect:GameObject;
 
 function ChangeSpeed(inSpeed:float)
 {
- enemySpeed = inSpeed; // used to change the enemy speed
+	enemySpeed = inSpeed; // used to change the enemy speed
 }
 
 function Awake()
 {
- playerReference = GameObject.Find("Player"); // find object 'player'
-
+	playerReference = GameObject.Find("Player"); // find object 'player'
 }
 
 function Update() 
@@ -27,6 +26,19 @@ function Update()
  	}
 }
 
+function RandSpTimer()
+{
+	yield WaitForSeconds(10);
+}
+
+function RandSpawn()
+{
+	Physics.IgnoreCollision(playerReference.collider, collider);
+	this.transform.position = Vector3(Random.Range(-18,18),-10,Random.Range(-18,18));
+	yield WaitForSeconds(2);
+	Physics.IgnoreCollision(playerReference.collider, collider);
+}
+
 function OnTriggerEnter(collision : Collider)
 {
 switch(collision.gameObject.name)
@@ -36,7 +48,8 @@ switch(collision.gameObject.name)
 	break;
 	case "Lazer(Clone)": 
 		Destroy (gameObject); // if bullet collide with enemy destroy enemy
-		Lazer_beh.score++; // if bullet collide with enemy add one to score
+		Instantiate(explosionEffect, transform.position, Quaternion.identity);
+		Lazer_beh.score = Lazer_beh.score + 10; // if bullet collide with enemy add one to score
 	break;
 	default:
 
@@ -140,6 +153,8 @@ function UpdateMovement()
 	var MultiX:float; // direction multiplier for X
 	var MultiZ:float; // direction multiplier for Y
 	var multiVector:Vector3 = enemySpeed*movementVector; //create multivector multi
+	
+	RandSpawn();
  
 	
 	//if enemy is closer to player via going through wall then go through wall to transport closer to player

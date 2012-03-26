@@ -4,7 +4,8 @@
 private var paused:boolean = false;
 
 
-function Update () {
+function Update ()
+{
 	if(Input.GetButtonUp("Escape")) // if player presses Esc key
 	{
 		if(!paused) 
@@ -20,7 +21,8 @@ function Update () {
 }	
 
 
-function OnGUI(){
+function OnGUI()
+{
 
     if(paused) 
 	{

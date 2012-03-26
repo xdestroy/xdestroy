@@ -15,6 +15,9 @@ public var invincibleTexture:Texture2D;
 public var norTexture:Texture2D;
 public static var multib:boolean = false;
 public static var defaultInvincibiltyTime:float = 8.0;
+public var explosionEffect:GameObject;
+public var pickUpExp:GameObject;
+public var dieExp:GameObject;
 
 
 
@@ -26,14 +29,14 @@ function Awake()
 }
 function Init()
 {
+	bulletFrequency = 0.3; // reset power up for bullets
+	Enemy_beh.enemySpeed = 10; // reset speed powerup for enemies
+	Enemy2_beh.enemySpeed = 10; // reset speed powerup for enemie2
+	multib = false; //reset multibullets
 	Player_beh.lives = 5; // intialize lives
 	Lazer_beh.score = 0; // intialize score
 	Player_beh.gameOver = false; // set gameover as false
 	Time.timeScale = 1; // unpause game if paused
-	bulletFrequency = 0.3; // reset power up for bullets
-	Enemy_beh.enemySpeed = 10; // reset speed powerup for enemies
-	Enemy2_beh.enemySpeed = 10; // reset speed powerup for enemie2
-	multib = false; // resets multibullets
 }
 
 function Update () 
@@ -41,7 +44,8 @@ function Update ()
 	if (isAlive) // if alive
 	{
 		UpdateMovement(); // allow movement
-		if (!bullets){
+		if (!bullets)
+		{
 		StartBullets(); // if player starts to shoot run startbullets script
 		}
 	}
@@ -145,17 +149,28 @@ function OnTriggerEnter(collision : Collider) // when player collides with anoth
 	switch(collision.gameObject.name)
 	{
 		case "Enemy(Clone)": // if player hits enemy
-			if(invinc) {
+			if(invinc) 
+			{
 				Destroy (collision.gameObject); // if incible kill enemy not player
+				Instantiate(explosionEffect, transform.position, Quaternion.identity);
 				Lazer_beh.score = Lazer_beh.score+1; // add to score if player hits enemy while invinc
 				}
 			else	
 				UpdateLives(); // if not inv run update lives
 		case "Enemy2(Clone)": // if player hits enemy
-			if(invinc) {
+			if(invinc) 
+			{
 				Destroy (collision.gameObject); // if incible kill enemy not player
+				Instantiate(explosionEffect, transform.position, Quaternion.identity);
 				Lazer_beh.score = Lazer_beh.score+1; // add to score if player hits enemy while invinc
-				}
+			}
+		case "Enemy3(Clone)": // if player hits enemy
+			if(invinc) 
+			{
+				Destroy (collision.gameObject); // if incible kill enemy not player
+				Instantiate(explosionEffect, transform.position, Quaternion.identity);
+				Lazer_beh.score = Lazer_beh.score+1; // add to score if player hits enemy while invinc
+			}
 			else	
 				UpdateLives(); // if not inv run update lives
 		break;
@@ -164,18 +179,22 @@ function OnTriggerEnter(collision : Collider) // when player collides with anoth
 		break;
 		case "FastGunSpeed(Clone)": // if player hits powerup run gun speed
 		Destroy (collision.gameObject); // destroy powerup object
+		Instantiate(pickUpExp, transform.position, Quaternion.identity);
 		GunPowerUp(); // run gun speed powerup script
 		break;
 		case "SlowEnemies(Clone)": // if player hits powerup run slow enemies
 		Destroy (collision.gameObject); // destroy powerup object
+		Instantiate(pickUpExp, transform.position, Quaternion.identity);
 		SlowEnemies(); // run slow enemies pwoerup script
 		break;
 		case "Invincibility(Clone)": // if player hits powerup run invincible
 			Destroy (collision.gameObject); // destroy powerup object
-			Invincible(0); // run invincible powerup script 
+			Instantiate(pickUpExp, transform.position, Quaternion.identity);
+			Invincible(0); // run invincible powerup script
 		break;
 		case "Multibullets(Clone)": // if player hits powerup run multibullets
 		Destroy (collision.gameObject); // destroy powerup object
+		Instantiate(pickUpExp, transform.position, Quaternion.identity);
 		Multibullets(); // run multibullets powerup script
 		break;
 		default:
@@ -241,10 +260,10 @@ function Invincible(intime:float)
 {
 	if (isAlive) // if player alive 
 	{
-		if (intime == 0.0) // this is a terrible terrible hack due to send message not liking overloaded functions
-		{
+		if (intime == 0.0)
+		{ 
 			intime = defaultInvincibiltyTime;
-		} 
+		}
 		invinc = true; // invible = true
 		StartInvincibility(); // run start invic script
 		InText(1); // run text flash script
@@ -288,9 +307,9 @@ function GunPowerUp()
 		StopBullets(); // stop shooting for period to apply new var
 		bulletFrequency = (bulletFrequency - 0.07); // change bullet speed
 		if(bulletFrequency <= 0.05) // if bullet speed gets below or = 0.05
-			{
-				bulletFrequency = 0.05; // keep speed at 0.05 (stop exploits of making bullets shoot too fast)
-			}
+		{
+			bulletFrequency = 0.05; // keep speed at 0.05 (stop exploits of making bullets shoot too fast)
+		}
 		StartBullets(); // allow shooting after applied var
 	}
 }
@@ -337,6 +356,7 @@ if (isAlive && (invinc == false)) // if alive and invincible not true
 
 function Die()
 {
+	Instantiate(dieExp, transform.position, Quaternion.identity);
 	var spawnPos : Vector3 = Random.insideUnitCircle * 10; // variable for random pos for player spawn
 	this.isAlive = false; // player object not alive
 	StopBullets(); // stop ability to shoot
@@ -352,10 +372,27 @@ function Die()
 
 function ReSpawn(spawnPos:Vector3)
 {
-	 this.renderer.enabled = true; // make player visable
-	 this.isAlive = true; // make player alive = true
-	 this.transform.position = Vector3( spawnPos.x , 0, spawnPos.z ); // spawn player at random pos
-	 Invincible(2); // set invincible for 2 seconds so player does not instant die
+	this.renderer.enabled = true; // make player visable
+	this.isAlive = true; // make player alive = true
+	this.transform.position = Vector3( spawnPos.x , 0, spawnPos.z ); // spawn player at random pos
+	Invincible(2); // set invincible for 2 seconds so player does not instant die
+	SpawnFlash();
+}
+
+function SpawnFlash()
+{
+	yield WaitForSeconds(.1);
+	this.renderer.enabled = false;
+	yield WaitForSeconds(.1);
+	this.renderer.enabled = true;
+	yield WaitForSeconds(.1);
+	this.renderer.enabled = false;
+	yield WaitForSeconds(.1);
+	this.renderer.enabled = true;
+	yield WaitForSeconds(.1);
+	this.renderer.enabled = false;
+	yield WaitForSeconds(.1);
+	this.renderer.enabled = true;
 }
 
 function GameOver()

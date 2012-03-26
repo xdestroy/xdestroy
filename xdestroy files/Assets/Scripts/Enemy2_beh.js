@@ -5,6 +5,7 @@ private var maxDamage:int = 1; // max health for enemy2
 private var currentDamage:int; // enemy2 current health
 private var playerReference:GameObject;
 private var movementVector:Vector3;
+public var explosionEffect:GameObject;
 
 function ChangeSpeed(inSpeed:float)
 {
@@ -39,6 +40,7 @@ function OnTriggerEnter(collision : Collider)
 		if(currentDamage == maxDamage)
 		{
 			Destroy (gameObject); // if bullet collide with enemy destroy enemy
+			Instantiate(explosionEffect, transform.position, Quaternion.identity);
 			Lazer_beh.score = Lazer_beh.score + 5; // if bullet collide with enemy add one to score
 		}
 		else

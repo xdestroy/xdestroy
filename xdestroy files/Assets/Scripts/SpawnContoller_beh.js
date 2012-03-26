@@ -5,11 +5,13 @@ public var setScoreLevels:int[]; // Score to change wave on.
 public var setNumSpawnPoints:int[]; // Number of spawn points for wave
 public var setSpawnSpeed:float[];
 public var setEnemySpeed:float[];
+public var setSpawnPointRelocSpeed:float[];
 
 public var spawnerPrefab:GameObject; //Spawn Point Prefab, set in the properties of this prefab
 private var curEnemyPrefab:GameObject; // Enemy prefab for spawners to use.
 
 private var spawnPointInstanceList:GameObject[]; // List of created spawn points.
+private var spawnPointInstanceList2:Object[]; 
 
 //logic Switchs and indexs
 private var doSpawn:boolean;//check before recycling spawner prefabs.
@@ -44,33 +46,33 @@ function ControlLogic()
 	ScoreCheck();
 	if (doSpawn)
 	{
-		SetSpawnOptions(thisSpawnLevel); // set spawn options appropriate for level
+		doSpawn = false;
+		SetSpawnOptions();
 		RemoveSpawns();
 		GameObject.Find('Player').SendMessage("Invincible",0.5);
-		CreateSpawns(setNumSpawnPoints[thisSpawnLevel]); // creates spawnpoints for level
-		doSpawn = false;
+		CreateSpawns();
+		ApplyEnemySpawnLocations();
+		
 	}
 	
 }
 
 function ScoreCheck()
 {
-	if (thisSpawnLevel > lastSpawnLevel) // checks level / wave player on
-	{ 
-		print("scorecheck: TSL > LSL");
+	if (thisSpawnLevel > lastSpawnLevel)
+	{
+		//print("scorecheck: TSL > LSL");
 		doSpawn = true;
 		lastSpawnLevel = thisSpawnLevel;
 		ScoresLives_beh.showLevel = true;
 	}
-	else
-	{
+	else{
 		//print("scorecheck: ! TSL > LSL");
 		var i:int;
 		for (i = setScoreLevels.length-1; i >= 0 ; i--)
-		{ // checks through score array backwards, set thisSpawnLevel to coorisponding level
-			if (Lazer_beh.score > setScoreLevels[i])
-			{
-				print("scorecheck: (! TSL > LSL  ) && (score > scorelevel["+i+'])');
+		{ // checks through score  array backwoulds, set thisSpawnLevel to coorisponding level
+			if (Lazer_beh.score > setScoreLevels[i]){
+				//print("scorecheck: (! TSL > LSL  ) && (score > scorelevel["+i+'])');
 				thisSpawnLevel = i;				
 				break;
 			}
@@ -79,7 +81,7 @@ function ScoreCheck()
 }
 
 function GuiHook()
-{ // function for displaying current level / wave
+{
 	if (ScoresLives_beh.showLevel)
 	{
 	ScoresLives_beh.level = thisSpawnLevel + 1;
@@ -130,30 +132,74 @@ var i:int;
 
 
 
-function SetSpawnOptions(level:int)
+function SetSpawnOptions()
 {
-	curEnemyPrefab = setEnemyTypeList[level];
-	//enemySpawnRate:
-	
+	curEnemyPrefab =setEnemyTypeList[thisSpawnLevel];
+	//TODO:
+	//enemySpawnRate;
+	//enemySpeed;
 }
 
 
-function CreateSpawns(amount:int)
+function CreateSpawns()
 {
 	// create amount of spawner prefabs at random locations
 	var i:int;
-	for(i = 0; i < amount; i++)
+	for(i = 0; i < setNumSpawnPoints[thisSpawnLevel]; i++)
 	{ 
-		//spawnPointInstanceList[i] = Instantiate(spawnerPrefab,Vector3(Random.Range(-18,18),0,Random.Range(-18,18)), Quaternion.identity);
-		Instantiate(spawnerPrefab,Vector3(Random.Range(-20,20),0,Random.Range(-20,20)), Quaternion.identity);
-		//print ("spList :"+spawnPointInstanceList[i] );
-	}	
+		var instance =  Instantiate(spawnerPrefab,Vector3(Random.Range(-18,18),-10,Random.Range(-18,18)), Quaternion.identity);
+		}	
 		ApplyEnemySpawnType();
 }
 
-function ApplyEnemySpawnType()
+function ApplyEnemySpawnLocations()	// Make a list of spawnpoints, run the method SetSpawnObj on that object...
 {
-	// Make a list of spawnpoints, run the method SetSpawnObj on that object...
+	spawnPointInstanceList =  GameObject.FindGameObjectsWithTag("SpawnPoint");
+	
+	var postop = Vector3(-18,0,0);
+	var posbottom = Vector3(18,0,0);
+	var posleft = Vector3(0,0,-18);
+	var posright = Vector3(0,0,18);
+	var i:int =0;
+	//print("sPIL.length = "+spawnPointInstanceList.length);
+	while(i < spawnPointInstanceList.length)
+	{
+		spawnPointInstanceList[i].transform.position = posleft;
+		spawnPointInstanceList[i].SendMessage('StartRandomizePositionOnX',setSpawnPointRelocSpeed[thisSpawnLevel]); 
+		i = i +1;
+		if (i == spawnPointInstanceList.length -1)
+		{
+		break;
+		}
+		
+		spawnPointInstanceList[i].transform.position = posright;
+		spawnPointInstanceList[i].SendMessage('StartRandomizePositionOnX',setSpawnPointRelocSpeed[thisSpawnLevel]); 
+		i = i +1;
+		if (i == spawnPointInstanceList.length -1)
+		{
+		break;
+		}
+		
+		spawnPointInstanceList[i].transform.position = postop;
+		spawnPointInstanceList[i].SendMessage('StartRandomizePositionOnY',setSpawnPointRelocSpeed[thisSpawnLevel]); 
+		i = i +1;
+		if (i == spawnPointInstanceList.length -1 )
+		{
+		break;
+		}
+		
+		spawnPointInstanceList[i].transform.position = posbottom;
+		spawnPointInstanceList[i].SendMessage('StartRandomizePositionOnY',setSpawnPointRelocSpeed[thisSpawnLevel]); 
+		i = i +1;
+		if (i == spawnPointInstanceList.length -1)
+		{
+		break;
+		}
+	}
+}
+
+function ApplyEnemySpawnType()	// Make a list of spawnpoints, run the method SetSpawnObj on that object...
+{
 	spawnPointInstanceList =  GameObject.FindGameObjectsWithTag("SpawnPoint");
 	var i:int;
 	for(i = 0; i < spawnPointInstanceList.length; i++)
@@ -163,18 +209,26 @@ function ApplyEnemySpawnType()
 	
 }
 
-function  RemoveSpawns() // function to remove spawners for more random spawning enemies
-{ 
+function  RemoveSpawns()
+{
 	spawnPointInstanceList =  GameObject.FindGameObjectsWithTag("SpawnPoint");
 	if (spawnPointInstanceList.length != 0)
-	{ // if spawn points exist - more than 1
-	
+	{
 		var i:int;
 		for( i = 0; i <  spawnPointInstanceList.length; i++)
-		{ 
-			Destroy( spawnPointInstanceList[i]); // destroy each spawn point from top of array
+		{
+			Destroy( spawnPointInstanceList[i]);
+			}
 		}
-	}
-print ("RemovingSpawns"); // print for testing purposes
+
+print ("RemovingSpawns");
 }
 
+/*
+  var wreckClone = Instantiate(wreck, transform.position, transform.rotation);
+
+    // Sometimes we need to carry over some variables from this object
+    // to the wreck
+    wreckClone.GetComponent(MyScript).someVariable = GetComponent(MyScript).someVariable;
+
+*/

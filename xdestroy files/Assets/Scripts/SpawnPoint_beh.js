@@ -1,5 +1,4 @@
 #pragma strict
-
 public var spawnInterval:float;
 public var spawnObj:GameObject;
 public var changeRate:float = 0.05;
@@ -47,4 +46,36 @@ function SetSpawnObj(obj:GameObject)
 StopSpawner();
 spawnObj = obj;
 StartSpawner();
+}
+
+
+//Interface and function to randomise spawner postion along 1 axis between -18 and 18
+function StartRandomizePositionOnX(interval:int)
+{
+InvokeRepeating("RandomizePositionOnX",0,interval) ;
+}
+
+function StopRandomizePositionOnX(interval:int)
+{
+CancelInvoke("RandomizePositionOnX");
+}
+
+function RandomizePositionOnX()
+{
+transform.position = Vector3(Random.Range(-18,18),this.transform.position.y,this.transform.position.z);
+}
+
+function StartRandomizePositionOnY(interval:int)
+{
+InvokeRepeating("RandomizePositionOnY",0,interval) ;
+}
+
+function StopRandomizePositionOnY(interval:int)
+{
+CancelInvoke("RandomizePositionOnY") ;
+}
+
+function RandomizePositionOnY()
+{
+transform.position = Vector3(this.transform.position.x,this.transform.position.y,Random.Range(-18,18));
 }

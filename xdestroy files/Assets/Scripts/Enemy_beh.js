@@ -3,6 +3,7 @@
 public static var enemySpeed:float = 10; // speed variable for character
 private var playerReference:GameObject;
 private var movementVector:Vector3;
+public var explosionEffect:GameObject;
 
 function ChangeSpeed(inSpeed:float)
 {
@@ -35,6 +36,7 @@ switch(collision.gameObject.name)
 	break;
 	case "Lazer(Clone)": 
 		Destroy (gameObject); // if bullet collide with enemy destroy enemy
+		Instantiate(explosionEffect, transform.position, Quaternion.identity);
 		Lazer_beh.score++; // if bullet collide with enemy add one to score
 	break;
 	default:
@@ -127,7 +129,6 @@ function UpdateMovement()
 	var playerZ = playerReference.transform.position.z;
 	var thisX = this.transform.position.x;
 	var thisZ = this.transform.position.z;
-	var transXY:Vector3;
 	var xylimit = 19.0;
 	var tmpVec = Vector3(0,0,0);
 	//var pXfromWall:float;
